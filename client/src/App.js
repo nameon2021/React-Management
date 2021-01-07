@@ -18,36 +18,26 @@ const styles = theme => ({
     table: {
         minWidth: 1080 //화면 크기가 줄어도 1080픽셀만큼 테이블 크기 정해짐
     }
-})
-
-const customers = [
-{
-    'id': 1,
-    'image' : 'https://placeimg.com/64/64/any',
-    'name': 'KNE React library test version',
-    'birthday': '20200107',
-    'gender' : 'male',
-    'job' : 'software developer React + Firebase test' 
-},
-{
-    'id': 2,
-    'image' : 'https://placeimg.com/64/64/any',
-    'name': 'KNE React library test version',
-    'birthday': '20200107',
-    'gender' : 'male',
-    'job' : 'software developer React + Firebase test' 
-},
-{
-    'id': 3,
-    'image' : 'https://placeimg.com/64/64/any',
-    'name': 'KNE React library test version',
-    'birthday': '20200107',
-    'gender' : 'male',
-    'job' : 'software developer React + Firebase test' 
-},
-]
+});
 
 class App extends Component {
+
+    state = {
+        customers: ""
+    }
+
+    componentDidMount() {
+        this.callApi()
+         .then(res => this.setState({customers: res}))
+         .catch(err => console.log(err));
+    }
+
+    callApi = async () => {
+        const response = await fetch('/api/customers');
+        const body = await response.json();
+        return body;
+    }
+
     render() {
         const { classes } = this.props;
         return (
@@ -64,7 +54,9 @@ class App extends Component {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {customers.map(c => { return (<Customer key={c.id} id={c.id} image={c.image} name={c.name} birthday={c.name} gender={c.gender} job={c.job} />); })}
+                        {this.state.customers ? this.state.customers.map(c => { 
+                            return (<Customer key={c.id} id={c.id} image={c.image} name={c.name} birthday={c.name} gender={c.gender} job={c.job} />); 
+                        }) : ""}
                     </TableBody>
                 </Table>
             </Paper>
